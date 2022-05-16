@@ -31,6 +31,10 @@ export async function query(prompt: string) {
 		body: JSON.stringify(body)
 	});
 
+	if (!res.ok) {
+        throw Error(res.statusText);
+    }
+
 	const data: QueryResponse = await res.json();
 	console.log(data);
 
