@@ -67,26 +67,40 @@
 </script>
 
 <head>
-	<title>GPT-3 Client</title>
+	<title>Ask GPT-3</title>
 </head>
 
 <main>
-	<section>
-		<div class="card">
-			<textarea bind:this={inputText}>Write a story about a highschool programmer girl</textarea>
+	<section class="prompt">
+		<div class="row">
+			<img src="/img/ask-gpt-3.svg" alt="Ask GPT-3" width="200" height="100" />
+			<div>
+				<ul>
+					<li>
+						Ask a qustion, enter the start of a sentence, type a command, or enter anything else.
+					</li>
+					<li>Submit the same prompt multiple times to get different answers.</li>
+					<li>Leave the prompt empty to get something completely random.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<textarea bind:this={inputText} rows="3" placeholder="Ask me anything…" />
 			<button on:click={submit}>Submit</button>
 		</div>
 	</section>
 	<section>
-		<h1>Responses</h1>
-		{#each responses as response (response.id)}
-			<Response
-				{response}
-				remove={() => {
-					remove(response);
-				}}
-			/>
-		{/each}
+		{#if responses.length > 0}
+			<h1 transition:slide>Responses</h1>
+			{#each responses as response (response.id)}
+				<Response
+					{response}
+					remove={() => {
+						remove(response);
+					}}
+				/>
+			{/each}
+		{/if}
 	</section>
 </main>
 
@@ -95,5 +109,26 @@
 		max-width: 50rem;
 		margin: 0 auto;
 		padding: 2rem;
+	}
+	.prompt {
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+
+		.row {
+			display: flex;
+			gap: 32px;
+			align-items: center;
+
+			textarea {
+				flex-grow: 1;
+				resize: none;
+			}
+
+			button {
+				padding: 16px;
+			}
+		}
+		margin: 128px 0;
 	}
 </style>

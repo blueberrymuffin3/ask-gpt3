@@ -14,8 +14,6 @@
 	import Icon from 'mdi-svelte';
 	import { mdiDeleteOutline } from '@mdi/js';
 
-	import Spinner from './spinner.svelte';
-
 	export let response: ResponseData;
 	export let remove: EventListener;
 </script>
@@ -33,10 +31,10 @@
 			{#if response.error}
 				<p class="error" transition:fade>{response.error}</p>
 			{:else if response.result}
-				<p transition:fade>{response.result}{response.truncated ? "…" : ""}</p>
+				<p transition:fade>{response.result}{response.truncated ? '…' : ''}</p>
 			{:else}
 				<div class="spinner" transition:scale>
-					<Spinner />
+					<img src="/img/spinner.svg" alt="Loading" />
 				</div>
 			{/if}
 		</div>
