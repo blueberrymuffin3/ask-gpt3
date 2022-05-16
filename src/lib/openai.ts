@@ -13,7 +13,7 @@ interface QueryResponse {
 	}[];
 }
 
-export async function query(prompt: string): Promise<string> {
+export async function query(prompt: string) {
 	const body = {
 		prompt,
 		temperature: 0.5,
@@ -32,6 +32,8 @@ export async function query(prompt: string): Promise<string> {
 	});
 
 	const data: QueryResponse = await res.json();
+	console.log(data);
 
-	return data.choices[0]?.text;
+	const choice = data.choices[0];
+	return choice && { text: choice?.text, truncated: choice?.finish_reason == "length" };
 }

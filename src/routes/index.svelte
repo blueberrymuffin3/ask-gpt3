@@ -6,54 +6,88 @@
 	import type { ResponseData } from '$lib/response.svelte';
 	import { query } from '$lib/openai';
 	import Response from '$lib/response.svelte';
+	import { browser } from '$app/env';
 
-	let nextId = 1;
 	let inputText: HTMLTextAreaElement;
-	let responses: ResponseData[] = [
-		{
-			id: 0,
-			timestamp: 1652411478473,
-			prompt: 'Write a story about a highschool programmer girl',
-			result:
-				'\n\nIt was the usual scene in the computer lab: a group of teenage boys clustered around the desk of the lone girl, trying to get her to help them with their projects. But this girl was no ordinary high school student. She was a programmer, and she knew how to use the computers.\n\nSo'
-		}
-	];
+	let responses: ResponseData[] = browser ? loadFromLocalStorage() : [];
+	let nextId = responses.map((response) => response.id).reduce((a, b) => Math.max(a, b), 0) + 1;
+
+	$: browser && saveToLocalStorage(responses);
 
 	function submit() {
 		const prompt = inputText.value;
 		const response: ResponseData = {
 			id: nextId++,
 			timestamp: Date.now(),
-			prompt
+			prompt,
+			truncated: false
 		};
 		responses = [response, ...responses];
 		query(inputText.value)
 			.then((result) => {
-				response.result = result;
+				response.result = result.text;
+				response.truncated = result.truncated;
 				responses = responses;
 			})
 			.catch((error) => {
-				response.error = error;
+				response.error = error.toString();
+				console.error(error);
 				responses = responses;
 			});
+	}
+
+	function remove(response: ResponseData) {
+		responses = responses.filter((r) => r !== response);
+	}
+
+	function saveToLocalStorage(responses: ResponseData[]) {
+		localStorage['responses'] = JSON.stringify(responses);
+	}
+
+	function loadFromLocalStorage(): ResponseData[] {
+		let data = null;
+		try {
+			data = JSON.parse(localStorage['responses']);
+		} catch (error) {
+			return [];
+		}
+		if (!Array.isArray(data)) {
+			return [];
+		}
+		let responses = new Array<ResponseData>();
+		for (let response of data) {
+			if (typeof response.id != 'number') continue;
+			if (typeof response.timestamp != 'number') continue;
+			if (typeof response.result != 'string' && typeof response.error != 'string') continue;
+			if (typeof response.truncated != 'boolean') continue;
+			responses.push(response);
+		}
+		return responses;
 	}
 </script>
 
 <head>
-	<title></title>
+	<title>GPT-3 Client</title>
 </head>
 
 <main>
-	<div class="card">
-		<textarea bind:this={inputText}>Write a story about a highschool programmer girl</textarea>
-		<button on:click={submit}>Submit</button>
-	</div>
-	<h1>Responses</h1>
-	{#each responses as response (response.id)}
-		<div transition:slide>
-			<Response {response} />
+	<section>
+		<div class="card">
+			<textarea bind:this={inputText}>Write a story about a highschool programmer girl</textarea>
+			<button on:click={submit}>Submit</button>
 		</div>
-	{/each}
+	</section>
+	<section>
+		<h1>Responses</h1>
+		{#each responses as response (response.id)}
+			<Response
+				{response}
+				remove={() => {
+					remove(response);
+				}}
+			/>
+		{/each}
+	</section>
 </main>
 
 <style lang="scss">
