@@ -1,4 +1,6 @@
-import { OPENAI_SECRET } from './credentials.json';
+const OPENAI_SECRET: string = import.meta.env.VITE_OPENAI_SECRET;
+
+console.log(import.meta.env)
 
 interface QueryResponse {
 	id: string;
