@@ -66,9 +66,9 @@
 	}
 </script>
 
-<head>
+<svelte:head>
 	<title>Ask GPT-3</title>
-</head>
+</svelte:head>
 
 <main>
 	<section class="prompt">
