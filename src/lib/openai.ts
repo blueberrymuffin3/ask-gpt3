@@ -1,45 +1,17 @@
-const OPENAI_SECRET: string = import.meta.env.VITE_OPENAI_SECRET;
-
-console.log(import.meta.env)
-
-interface QueryResponse {
-	id: string;
-	object: string;
-	created: number;
-	model: string;
-	choices: {
-		text: string;
-		index: number;
-		logprobs: any;
-		finish_reason: string;
-	}[];
+interface ResponseData {
+	text: string;
+	truncated: boolean;
 }
 
-export async function query(prompt: string) {
-	const body = {
-		prompt,
-		temperature: 0.5,
-		max_tokens: 64,
-		top_p: 1.0,
-		frequency_penalty: 0.0,
-		presence_penalty: 0.0
-	};
-	const res = await fetch('https://api.openai.com/v1/engines/text-curie-001/completions', {
+export async function query(prompt: string): Promise<ResponseData> {
+	const res = await fetch('/api/gpt3', {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${OPENAI_SECRET}`
-		},
-		body: JSON.stringify(body)
+		body: prompt
 	});
 
 	if (!res.ok) {
-        throw Error(res.statusText);
-    }
+		throw Error(`HTTP Code ${res.status} ${res.statusText} ${await res.text()}`);
+	}
 
-	const data: QueryResponse = await res.json();
-	console.log(data);
-
-	const choice = data.choices[0];
-	return choice && { text: choice?.text, truncated: choice?.finish_reason == "length" };
+	return await res.json();
 }
