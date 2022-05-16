@@ -1,5 +1,5 @@
 {
-  "name": "shopify-challenge-gpt3",
+  "name": "ask-gpt3",
   "version": "0.0.1",
   "scripts": {
     "dev": "svelte-kit dev",
