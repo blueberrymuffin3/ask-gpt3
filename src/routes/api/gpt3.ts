@@ -56,7 +56,7 @@ export async function post(
 
 	return {
 		body: {
-			text: choice.text,
+			text: choice.text.trim(),
 			truncated: choice?.finish_reason == 'length'
 		}
 	};

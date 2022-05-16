@@ -31,7 +31,7 @@
 			{#if response.error}
 				<p class="error" transition:fade>{response.error}</p>
 			{:else if response.result}
-				<p transition:fade>{response.result}{response.truncated ? '…' : ''}</p>
+				<pre transition:fade>{response.result}{response.truncated ? '…' : ''}</pre>
 			{:else}
 				<div class="spinner" transition:scale>
 					<img src="/img/spinner.svg" alt="Loading" />
@@ -107,7 +107,11 @@
 		align-items: center;
 		justify-content: center;
 	}
-	p {
+	pre {
+		white-space: pre-wrap;
+	}
+	p, pre {
+		font-family: inherit;
 		font-size: 16px;
 		margin: 0;
 		margin-top: 16px;
