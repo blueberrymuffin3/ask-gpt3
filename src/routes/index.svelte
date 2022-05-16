@@ -72,7 +72,7 @@
 
 <main>
 	<section class="prompt">
-		<div class="row">
+		<div class="row wrap-mobile">
 			<img src="/img/ask-gpt-3.svg" alt="Ask GPT-3" width="200" height="100" />
 			<div>
 				<ul>
@@ -127,6 +127,11 @@
 
 			button {
 				padding: 16px;
+			}
+		}
+		.row.wrap-mobile {
+			@media only screen and (max-width: 700px) {
+				flex-direction: column;
 			}
 		}
 		margin: 128px 0;
