@@ -92,6 +92,9 @@
 			color: #555;
 			margin: 0;
 		}
+		@media only screen and (max-width: 600px) {
+			flex-direction: column;
+		}
 	}
 	.content {
 		min-height: 100px;
@@ -110,7 +113,8 @@
 	pre {
 		white-space: pre-wrap;
 	}
-	p, pre {
+	p,
+	pre {
 		font-family: inherit;
 		font-size: 16px;
 		margin: 0;
